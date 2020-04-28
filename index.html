@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="jquery-ui.theme.min.css">
+    <link rel="stylesheet" href="jquery-ui.structure.min.css">
 </head>
 
 <body>
@@ -16,54 +17,50 @@
     <script>
         $(function() {
             var invalid = {
-                "single": ["2012/2/4", "2012/3/2"],
-                "recurrent_day": [0],
-                "recurrent_date": [27],
+                "single": ["2020/2/4", "2020/5/11", "2020/6/3", "2020/7/4"], //特定日期
+                "recurrent_day": [0], //循環(星期)
+                "recurrent_date": [28], //循環(日)
                 "period": [{
-                    "from": "2012/2/21",
-                    "to": "2012/2/22"
+                    "from": "2020/2/21",
+                    "to": "2020/2/22"
                 }],
                 "recurrent_period": [{
-                    "from": "2012/2/28",
-                    "to": "2012/2/29",
+                    "from": "2020/2/28",
+                    "to": "2020/2/29",
                     "period": "monthly"
                 }, {
-                    "from": "2012/2/7",
-                    "to": "2012/2/9",
+                    "from": "2020/2/7",
+                    "to": "2020/2/9",
                     "period": "yearly"
                 }]
             };
 
-            // 檢查陣列是否有值
+            // 檢查single是否有值
             function single(date) {
                 var USdate = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-                // console.log(USdate)
                 return ($.inArray(USdate, invalid.single) > -1);
             }
 
+            // 循環日
             function recurrent_day(date) {
                 return ($.inArray(date.getDay(), invalid.recurrent_day) > -1);
             }
 
+            // 循環日期
             function recurrent_date(date) {
                 return ($.inArray(date.getDate(), invalid.recurrent_date) > -1);
             }
 
+            // 檢查期間
             function period(date) {
                 var i, num, period, start, startArray, end, endArray;
                 num = invalid.period.length;
-                // console.log(num)
                 for (i = 0; i < num; i++) {
                     period = invalid.period[i];
-                    // console.log(period)
                     startArray = period.from.split('/');
-                    // console.log(startArray)
                     start = new Date(startArray[2], (startArray[0] - 1), startArray[1]);
-                    // console.log(start)
                     endArray = period.to.split('/');
-                    // console.log(endArray)
                     end = new Date(endArray[2], (endArray[0] - 1), endArray[1]);
-                    // console.log(end)
                     if (date >= start && date <= end) {
                         return true;
                     }
@@ -71,35 +68,30 @@
                 return false;
             }
 
+            // 循環期間
             function recurrent_period(date) {
                 var i, num, period, recurrence, startArray, endArray, startDay, endDay, start, end;
                 num = invalid.recurrent_period.length;
                 for (i = 0; i < num; i++) {
                     period = invalid.recurrent_period[i];
-                    // console.log(period)
                     recurrence = period.period;
-                    // console.log(recurrence)
                     startArray = period.from.split('/');
-                    // console.log(startArray)
                     endArray = period.to.split('/');
-                    // console.log(endArray)
 
                     if (recurrence === 'monthly') {
                         startDay = parseInt(startArray[1], 10);
-                        // console.log(startDay)
                         endDay = parseInt(endArray[1], 10);
-                        // console.log(endDay)
                         if (date.getDate() >= startDay && date.getDate() <= endDay) {
                             return true;
                         }
                     } else if (recurrence === 'yearly') {
                         start = new Date(date.getFullYear(), (startArray[0] - 1), startArray[1]);
                         end = new Date(date.getFullYear(), (endArray[0] - 1), endArray[1]);
-                        console.log({
-                            start: start.toDateString(),
-                            end: end.toDateString(),
-                            day: date.toDateString()
-                        })
+                        // console.log({
+                        //     start: start.toDateString(),
+                        //     end: end.toDateString(),
+                        //     day: date.toDateString()
+                        // })
                         if (date >= start && date <= end) {
                             return true;
                         }
@@ -108,17 +100,17 @@
                 return false;
             }
 
+            // dateFormat: 設定日期格式
+            // beforeShow: 顯示日曆框前要做的事，對input 物件操作
+            // beforeShowDay: 顯示日曆框前要做的事，對日期操作
             $('input').datepicker({
                 changeMonth: true,
                 changeYear: true,
                 "dateFormat": "yy/mm/dd",
                 beforeShowDay: function(date) {
-                    // console.log(date)
                     if (single(date)) {
-                        // console.log(date)
                         return [false];
                     } else if (recurrent_day(date)) {
-                        // console.log(date)
                         return [false];
                     } else if (recurrent_date(date)) {
                         return [false];
