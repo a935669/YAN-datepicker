@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="jquery-ui.theme.min.css">
+    <link rel="stylesheet" href="jquery-ui.structure.min.css">
+</head>
+
+<body>
+    <input type="text">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".js_datepicker").datepicker("destroy");
+
+            //不能點選的日期
+            var invalid = {
+                "ShipDateExclude": ["20200605", "20200615", "20200620"], //特定日期
+                "ShipDateStart": "20200601", //起
+                "ShipDateEnd": "20200730", //迄
+                "ShipWeekExclude": [1]
+            };
+
+            function recurrent_day(date) {
+                return ($.inArray(date.getDay(), invalid.ShipWeekExclude) > -1);
+                console.log($.inArray(date.getDay(), invalid.ShipWeekExclude) > -1);
+            }
+
+            var ShipDateStart = invalid.ShipDateStart;
+            var ShipDateEnd = invalid.ShipDateEnd;
+
+            var yearStart = ShipDateStart.slice(0, 4);
+            var monthStart = ShipDateStart.slice(4, 6);
+            var dayStart = ShipDateStart.slice(6, 8);
+            var yearEnd = ShipDateEnd.slice(0, 4);
+            var monthEnd = ShipDateEnd.slice(4, 6);
+            var dayEnd = ShipDateEnd.slice(6, 8);
+
+            $('input').datepicker({
+                "dateFormat": "yy/mm/dd",
+                inline: true,
+                minDate: new Date(yearStart, monthStart - 1, dayStart),
+                maxDate: new Date(yearEnd, monthEnd - 1, dayEnd),
+                beforeShowDay: function(date) {
+                    if (recurrent_day(date)) {
+                        return [false];
+                    }
+
+                    //轉換日期格式
+                    var string = jQuery.datepicker.formatDate('yymmdd', date);
+
+                    return [invalid.ShipDateExclude.indexOf(string) == -1];
+                }
+            });
+
+            $('.js_datepicker').datepicker("refresh");
+        });
+    </script>
+</body>
+
+</html>

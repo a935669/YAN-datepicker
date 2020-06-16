@@ -17,20 +17,20 @@
     <script>
         $(function() {
             var invalid = {
-                "single": ["2020/2/4", "2020/5/11", "2020/6/3", "2020/7/4"], //特定日期
+                "single": ["20200604", "20200605", "20200613", "20200614"], //特定日期
                 "recurrent_day": [0], //循環(星期)
                 "recurrent_date": [28], //循環(日)
                 "period": [{
-                    "from": "2020/2/21",
-                    "to": "2020/2/22"
+                    "from": "20200221",
+                    "to": "20200222"
                 }],
                 "recurrent_period": [{
-                    "from": "2020/2/28",
-                    "to": "2020/2/29",
+                    "from": "20200228",
+                    "to": "20200229",
                     "period": "monthly"
                 }, {
-                    "from": "2020/2/7",
-                    "to": "2020/2/9",
+                    "from": "20200207",
+                    "to": "20200209",
                     "period": "yearly"
                 }]
             };
@@ -104,8 +104,8 @@
             // beforeShow: 顯示日曆框前要做的事，對input 物件操作
             // beforeShowDay: 顯示日曆框前要做的事，對日期操作
             $('input').datepicker({
-                changeMonth: true,
-                changeYear: true,
+                changeMonth: false,
+                changeYear: false,
                 "dateFormat": "yy/mm/dd",
                 beforeShowDay: function(date) {
                     if (single(date)) {
